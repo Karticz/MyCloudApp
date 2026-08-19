@@ -10,7 +10,7 @@ def get_db_connection():
         port=4000,
         user="JXy2Cm2bk7rH4as.root",
         password="FQUYoY14hugDgBRN", 
-        database="sys"
+        database="test"
     )
 
 
