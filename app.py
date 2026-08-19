@@ -193,7 +193,7 @@ else:
                 if os.path.exists(file_path):
                     col = cols[index % 3] # Cycle through the 3 columns
                     
-                   with col:
+                    with col:
                 
                 if file_type in ['png', 'jpg', 'jpeg']:
                     st.image(file_path, caption=file_name, use_container_width=True)
