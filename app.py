@@ -13,6 +13,7 @@ def get_db_connection():
 
 st.set_page_config(page_title="My Cloud App", page_icon="☁️", layout="centered")
 
+# --- EPIC CSS & ANIMATIONS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -21,116 +22,110 @@ html, body, [class*="css"]  {
     font-family: 'Poppins', sans-serif;
 }
 
-/* Beautiful Background Gradient */
+/* 1. Animated Moving Background */
 .stApp {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1a2a6c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-/* Smooth Slide-up Fade Animation */
-@keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Floating Animation for the Main Title */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
-    100% { transform: translateY(0px); }
+/* 2. Page Transition Animation (Slide & Fade) */
+@keyframes pageTransition {
+    0% { opacity: 0; transform: translateX(-40px) scale(0.95); }
+    100% { opacity: 1; transform: translateX(0px) scale(1); }
 }
 
 .block-container {
-    animation: slideUpFade 0.8s ease-out;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 25px;
+    animation: pageTransition 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
     padding: 3rem !important;
-    box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.15);
-    margin-top: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    margin-top: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white; /* Make text white for dark background */
 }
 
+/* Make default text elements white */
+p, h1, h2, h3, label {
+    color: #ffffff !important;
+}
+
+/* 3. Floating Title Animation */
 h1 {
-    animation: float 4s ease-in-out infinite;
-    text-align: center;
-    color: #1a2a6c;
+    animation: float 3s ease-in-out infinite;
+    text-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
 }
 
-/* Custom Input Boxes */
+/* 4. Beautiful Glass Input Boxes */
 .stTextInput > div > div > input {
-    border-radius: 12px;
-    border: 2px solid #e1e5ee;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    color: white;
     padding: 12px;
     transition: all 0.3s ease;
 }
 .stTextInput > div > div > input:focus {
-    border-color: #4b6cb7;
-    box-shadow: 0 0 10px rgba(75, 108, 183, 0.2);
+    background: rgba(255,255,255,0.2);
+    border: 2px solid #00f2fe;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
 }
 
-/* Pro-level 3D Buttons */
+/* 5. EPIC Glow Effect Buttons */
 div.stButton > button:first-child {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: white;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    color: #000 !important;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     padding: 12px 24px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-    width: 100%;
-    font-weight: 600;
+    font-weight: bold;
     letter-spacing: 1px;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    width: 100%;
 }
-
 div.stButton > button:first-child:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 25px 10px rgba(0, 242, 254, 0.7); /* THIS IS THE GLOW */
 }
 
-/* Modern Tab Styling */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 24px;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-.stTabs [data-baseweb="tab"] {
-    height: 50px;
-    white-space: pre-wrap;
-    background-color: transparent;
-    border-radius: 10px 10px 0 0;
-    gap: 1px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-.stTabs [aria-selected="true"] {
-    color: #4b6cb7;
-    border-bottom: 3px solid #4b6cb7;
-}
-
+/* Hide default streamlit elements safely */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+/* Did NOT hide header so your sidebar toggle button stays visible! */
 </style>
 """, unsafe_allow_html=True)
 
 st.title("☁️ My Own Cloud Storage")
-st.markdown("<p style='text-align: center; color: #555; margin-bottom: 30px;'>🔒︎ Keep your photos and videos completely safe.</p>", unsafe_allow_html=True)
+st.write("🔒︎ Keep your photos and videos completely safe.")
 
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
 if not st.session_state['logged_in']:
-    tab1, tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
+    st.sidebar.title("Menu 𓃌")
+    menu = ["Login", "Sign Up"]
+    choice = st.sidebar.radio("Select an option:", menu)
 
-    with tab1:
-        st.markdown("<h3 style='text-align: center;'>Welcome Back!</h3>", unsafe_allow_html=True)
-        login_user = st.text_input("Username", key="login_user")
-        login_pass = st.text_input("Password", type="password", key="login_pass")
+    if choice == "Login":
+        st.subheader(" ♡ Welcome Back!")
+        login_user = st.text_input("Username")
+        login_pass = st.text_input("Password", type="password")
         
-        if st.button("Login"):
+        if st.button("Login "):
             if login_user and login_pass:
                 conn = get_db_connection()
                 cursor = conn.cursor()
@@ -148,13 +143,13 @@ if not st.session_state['logged_in']:
             else:
                  st.warning("Please fill in both fields.")
 
-    with tab2:
-        st.markdown("<h3 style='text-align: center;'>Create a New Account</h3>", unsafe_allow_html=True)
-        new_user = st.text_input("New Username", key="reg_user")
-        new_pass = st.text_input("New Password", type="password", key="reg_pass")
-        confirm_pass = st.text_input("Confirm Password", type="password", key="reg_confirm")
+    elif choice == "Sign Up":
+        st.subheader("➜] Create a New Account")
+        new_user = st.text_input("New Username")
+        new_pass = st.text_input("New Password", type="password")
+        confirm_pass = st.text_input("Confirm Password", type="password")
         
-        if st.button("Register Account"):
+        if st.button("Register ➤"):
             if new_pass != confirm_pass:
                 st.error("Passwords do not match!")
             elif new_user and new_pass:
@@ -163,7 +158,7 @@ if not st.session_state['logged_in']:
                     cursor = conn.cursor()
                     cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (new_user, new_pass))
                     conn.commit()
-                    st.success("Account created successfully! Please switch to the Login tab.")
+                    st.success("Account created successfully! Please go to Login menu.")
                 except mysql.connector.IntegrityError:
                     st.error("Username already exists. Please choose a different one.")
             else:
