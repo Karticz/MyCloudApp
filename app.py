@@ -190,18 +190,18 @@ else:
                 file_path = os.path.join(save_folder, file_name)
                 
                 # Check if the file actually exists in the D Drive
-                if os.path.exists(file_path):
-                    col = cols[index % 3] # Cycle through the 3 columns
-                    
-                    with col:
-                
+if os.path.exists(file_path):
+            col = cols[index % 3]
+            
+            with col:
+                # ఇమేజ్ అయితే చూపించడానికి
                 if file_type in ['png', 'jpg', 'jpeg']:
                     st.image(file_path, caption=file_name, use_container_width=True)
-                
+                # వీడియో అయితే ప్లే చేయడానికి
                 elif file_type == 'mp4':
                     st.video(file_path)
                     st.caption(file_name)
-                
+                # వేరే ఫైల్స్ అయితే డౌన్‌లోడ్ బటన్
                 else:
                     with open(file_path, "rb") as f:
                         st.download_button(
@@ -211,23 +211,23 @@ else:
                             key=f"download_{file_name}_{index}"
                         )
                 
-                
+                # --- కొత్తగా యాడ్ చేసిన డిలీట్ బటన్ ---
                 if st.button("🗑️ Delete", key=f"delete_{file_name}_{index}"):
                     try:
-                        ం
+                        # 1. ఫైల్‌ను కంప్యూటర్ నుండి డిలీట్ చేయడం
                         if os.path.exists(file_path):
                             os.remove(file_path)
                         
-                        
+                        # 2. డేటాబేస్ (TiDB) నుండి డిలీట్ చేయడం
                         del_conn = get_db_connection()
                         del_cursor = del_conn.cursor()
                         del_cursor.execute("DELETE FROM files WHERE filename = %s AND user_id = %s", (file_name, st.session_state['id']))
                         del_conn.commit()
                         
-                        st.success("File Deleted 🗑️")
-                        st.rerun() 
+                        st.success("ఫైల్ డిలీట్ అయిపోయింది! 🗑️")
+                        st.rerun() # పేజీని వెంటనే రిఫ్రెష్ చేయడానికి
                     except Exception as e:
-                        st.error(f"Not Deleted,Error: {e}")
+                        st.error(f"డిలీట్ అవ్వలేదు, ఎర్రర్: {e}")
                 else:
                     st.warning(f"File missing on disk: {file_name}")
         else:
