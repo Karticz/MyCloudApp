@@ -6,10 +6,11 @@ import os
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Karthi6016@", 
-        database="my_cloud_app"
+        host="gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+        port=4000,
+        user="JXy2Cm2bk7rH4as.root",
+        password="FQUYoY14hugDgBRN", 
+        database="sys"
     )
 
 
@@ -121,7 +122,7 @@ else:
     st.subheader(f"Welcome to your Cloud, {st.session_state['username']}! ☁️")
     
     # --- FIX: We define save_folder here so BOTH Upload and Gallery can access it ---
-    save_folder = r"D:\MyCloudStorage"
+    save_folder = "MyCloudStorage"
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
     
