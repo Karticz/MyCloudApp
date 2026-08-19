@@ -15,50 +15,99 @@ st.set_page_config(page_title="My Cloud App", page_icon="☁️", layout="center
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 html, body, [class*="css"]  {
     font-family: 'Poppins', sans-serif;
 }
 
+/* Beautiful Background Gradient */
+.stApp {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Smooth Slide-up Fade Animation */
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating Animation for the Main Title */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
 .block-container {
-    animation: fadeIn 0.8s ease-out;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 2rem 3rem !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    margin-top: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideUpFade 0.8s ease-out;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 3rem !important;
+    box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.15);
+    margin-top: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
+h1 {
+    animation: float 4s ease-in-out infinite;
+    text-align: center;
+    color: #1a2a6c;
+}
+
+/* Custom Input Boxes */
 .stTextInput > div > div > input {
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    padding: 10px;
+    border-radius: 12px;
+    border: 2px solid #e1e5ee;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+.stTextInput > div > div > input:focus {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 10px rgba(75, 108, 183, 0.2);
 }
 
+/* Pro-level 3D Buttons */
 div.stButton > button:first-child {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     color: white;
     border: none;
     border-radius: 25px;
-    padding: 10px 24px;
+    padding: 12px 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
     width: 100%;
     font-weight: 600;
+    letter-spacing: 1px;
 }
 
 div.stButton > button:first-child:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* Modern Tab Styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.stTabs [data-baseweb="tab"] {
+    height: 50px;
+    white-space: pre-wrap;
+    background-color: transparent;
+    border-radius: 10px 10px 0 0;
+    gap: 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.stTabs [aria-selected="true"] {
+    color: #4b6cb7;
+    border-bottom: 3px solid #4b6cb7;
 }
 
 #MainMenu {visibility: hidden;}
@@ -68,22 +117,20 @@ header {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 st.title("☁️ My Own Cloud Storage")
-st.write("🔒︎ Keep your photos and videos completely safe.")
+st.markdown("<p style='text-align: center; color: #555; margin-bottom: 30px;'>🔒︎ Keep your photos and videos completely safe.</p>", unsafe_allow_html=True)
 
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
 if not st.session_state['logged_in']:
-    st.sidebar.title("Menu 𓃌")
-    menu = ["Login", "Sign Up"]
-    choice = st.sidebar.radio("Select an option:", menu)
+    tab1, tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
 
-    if choice == "Login":
-        st.subheader(" ♡ Welcome Back!")
-        login_user = st.text_input("Username")
-        login_pass = st.text_input("Password", type="password")
+    with tab1:
+        st.markdown("<h3 style='text-align: center;'>Welcome Back!</h3>", unsafe_allow_html=True)
+        login_user = st.text_input("Username", key="login_user")
+        login_pass = st.text_input("Password", type="password", key="login_pass")
         
-        if st.button("Login "):
+        if st.button("Login"):
             if login_user and login_pass:
                 conn = get_db_connection()
                 cursor = conn.cursor()
@@ -101,13 +148,13 @@ if not st.session_state['logged_in']:
             else:
                  st.warning("Please fill in both fields.")
 
-    elif choice == "Sign Up":
-        st.subheader("➜] Create a New Account")
-        new_user = st.text_input("New Username")
-        new_pass = st.text_input("New Password", type="password")
-        confirm_pass = st.text_input("Confirm Password", type="password")
+    with tab2:
+        st.markdown("<h3 style='text-align: center;'>Create a New Account</h3>", unsafe_allow_html=True)
+        new_user = st.text_input("New Username", key="reg_user")
+        new_pass = st.text_input("New Password", type="password", key="reg_pass")
+        confirm_pass = st.text_input("Confirm Password", type="password", key="reg_confirm")
         
-        if st.button("Register ➤"):
+        if st.button("Register Account"):
             if new_pass != confirm_pass:
                 st.error("Passwords do not match!")
             elif new_user and new_pass:
@@ -116,7 +163,7 @@ if not st.session_state['logged_in']:
                     cursor = conn.cursor()
                     cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (new_user, new_pass))
                     conn.commit()
-                    st.success("Account created successfully! Please go to Login menu.")
+                    st.success("Account created successfully! Please switch to the Login tab.")
                 except mysql.connector.IntegrityError:
                     st.error("Username already exists. Please choose a different one.")
             else:
@@ -220,11 +267,3 @@ else:
     if st.button("Logout"):
         st.session_state['logged_in'] = False
         st.rerun()
-
-
-
-
-    
-
-        
-    
