@@ -2,10 +2,8 @@ import streamlit as st
 import mysql.connector
 import os
 
-
-
 def get_db_connection():
-   return mysql.connector.connect(
+    return mysql.connector.connect(
         host=st.secrets["mysql"]["host"],
         port=4000,
         user=st.secrets["mysql"]["user"],
@@ -13,13 +11,11 @@ def get_db_connection():
         database=st.secrets["mysql"]["database"]
     )
 
-
 st.set_page_config(page_title="My Cloud App", page_icon="☁️", layout="centered")
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -29,7 +25,6 @@ st.markdown("""
 html, body, [class*="css"]  {
     font-family: 'Poppins', sans-serif;
 }
-
 
 .block-container {
     animation: fadeIn 0.8s ease-out;
@@ -75,10 +70,8 @@ header {visibility: hidden;}
 st.title("☁️ My Own Cloud Storage")
 st.write("🔒︎ Keep your photos and videos completely safe.")
 
-
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
-
 
 if not st.session_state['logged_in']:
     st.sidebar.title("Menu 𓃌")
@@ -92,7 +85,6 @@ if not st.session_state['logged_in']:
         
         if st.button("Login "):
             if login_user and login_pass:
-                
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 cursor.execute("SELECT id, username FROM users WHERE username = %s AND password = %s", (login_user, login_pass))
@@ -100,7 +92,6 @@ if not st.session_state['logged_in']:
                 
                 if user_record:
                     st.success("Login Successful!")
-                    
                     st.session_state['logged_in'] = True
                     st.session_state['id'] = user_record[0]
                     st.session_state['username'] = user_record[1]
@@ -123,7 +114,6 @@ if not st.session_state['logged_in']:
                 try:
                     conn = get_db_connection()
                     cursor = conn.cursor()
-                    
                     cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (new_user, new_pass))
                     conn.commit()
                     st.success("Account created successfully! Please go to Login menu.")
@@ -132,14 +122,11 @@ if not st.session_state['logged_in']:
             else:
                 st.warning("Please fill in all fields.")
 else:
-    
     st.subheader(f"Welcome to your Cloud, {st.session_state['username']}! ☁️")
-    
     
     save_folder = "MyCloudStorage"
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
-    
     
     uploaded_file = st.file_uploader("Upload your file here (Photos/Videos/Docs)", type=['png', 'jpg', 'jpeg', 'mp4', 'txt', 'pdf'])
     
@@ -147,11 +134,9 @@ else:
         if st.button("Upload to Cloud ⏏"):
             file_path = os.path.join(save_folder, uploaded_file.name)
             
-            
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
                 
-            
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
@@ -169,19 +154,16 @@ else:
 
     st.write("---")
     
-    
     st.subheader("📁 Your Cloud Gallery")
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        
         cursor.execute("SELECT filename, file_type FROM files WHERE user_id = %s", (st.session_state['id'],))
         user_files = cursor.fetchall()
         
         if user_files:
-            # Creating a 3-column grid layout for the gallery
             cols = st.columns(3)
             
             for index, file_record in enumerate(user_files):
@@ -189,45 +171,42 @@ else:
                 file_type = file_record[1].lower()
                 file_path = os.path.join(save_folder, file_name)
                 
-                # Check if the file actually exists in the D Drive
-if os.path.exists(file_path):
-            col = cols[index % 3]
-            
-            with col:
-                # ఇమేజ్ అయితే చూపించడానికి
-                if file_type in ['png', 'jpg', 'jpeg']:
-                    st.image(file_path, caption=file_name, use_container_width=True)
-                # వీడియో అయితే ప్లే చేయడానికి
-                elif file_type == 'mp4':
-                    st.video(file_path)
-                    st.caption(file_name)
-                # వేరే ఫైల్స్ అయితే డౌన్‌లోడ్ బటన్
-                else:
-                    with open(file_path, "rb") as f:
-                        st.download_button(
-                            label=f"📄 Download {file_name}",
-                            data=f,
-                            file_name=file_name,
-                            key=f"download_{file_name}_{index}"
-                        )
-                
-                # --- కొత్తగా యాడ్ చేసిన డిలీట్ బటన్ ---
-                if st.button("🗑️ Delete", key=f"delete_{file_name}_{index}"):
-                    try:
-                        # 1. ఫైల్‌ను కంప్యూటర్ నుండి డిలీట్ చేయడం
-                        if os.path.exists(file_path):
-                            os.remove(file_path)
+                if os.path.exists(file_path):
+                    col = cols[index % 3]
+                    
+                    with col:
+                        # Display Image
+                        if file_type in ['png', 'jpg', 'jpeg']:
+                            st.image(file_path, caption=file_name, use_container_width=True)
+                        # Display Video
+                        elif file_type == 'mp4':
+                            st.video(file_path)
+                            st.caption(file_name)
+                        # Display Download Button for other files
+                        else:
+                            with open(file_path, "rb") as f:
+                                st.download_button(
+                                    label=f"📄 Download {file_name}",
+                                    data=f,
+                                    file_name=file_name,
+                                    key=f"download_{file_name}_{index}"
+                                )
                         
-                        # 2. డేటాబేస్ (TiDB) నుండి డిలీట్ చేయడం
-                        del_conn = get_db_connection()
-                        del_cursor = del_conn.cursor()
-                        del_cursor.execute("DELETE FROM files WHERE filename = %s AND user_id = %s", (file_name, st.session_state['id']))
-                        del_conn.commit()
-                        
-                        st.success("ఫైల్ డిలీట్ అయిపోయింది! 🗑️")
-                        st.rerun() # పేజీని వెంటనే రిఫ్రెష్ చేయడానికి
-                    except Exception as e:
-                        st.error(f"డిలీట్ అవ్వలేదు, ఎర్రర్: {e}")
+                        # Delete Button Functionality
+                        if st.button("🗑️ Delete", key=f"delete_{file_name}_{index}"):
+                            try:
+                                if os.path.exists(file_path):
+                                    os.remove(file_path)
+                                
+                                del_conn = get_db_connection()
+                                del_cursor = del_conn.cursor()
+                                del_cursor.execute("DELETE FROM files WHERE filename = %s AND user_id = %s", (file_name, st.session_state['id']))
+                                del_conn.commit()
+                                
+                                st.success("File deleted successfully! 🗑️")
+                                st.rerun() 
+                            except Exception as e:
+                                st.error(f"Failed to delete, error: {e}")
                 else:
                     st.warning(f"File missing on disk: {file_name}")
         else:
@@ -236,7 +215,6 @@ if os.path.exists(file_path):
     except Exception as e:
          st.error(f"Failed to load gallery: {e}")
     
-
     st.write("---") 
     
     if st.button("Logout"):
