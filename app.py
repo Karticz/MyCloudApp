@@ -18,8 +18,13 @@ st.set_page_config(page_title="My Cloud App", page_icon="☁️", layout="center
 
 st.markdown("""
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 html, body, [class*="css"]  {
     font-family: 'Poppins', sans-serif;
@@ -27,6 +32,7 @@ html, body, [class*="css"]  {
 
 
 .block-container {
+    animation: fadeIn 0.8s ease-out;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -37,13 +43,11 @@ html, body, [class*="css"]  {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-
 .stTextInput > div > div > input {
     border-radius: 10px;
     border: 1px solid #ddd;
     padding: 10px;
 }
-
 
 div.stButton > button:first-child {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
@@ -61,7 +65,6 @@ div.stButton > button:first-child:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
-
 
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
@@ -129,26 +132,26 @@ if not st.session_state['logged_in']:
             else:
                 st.warning("Please fill in all fields.")
 else:
-    # Screen visible after successful login
+    
     st.subheader(f"Welcome to your Cloud, {st.session_state['username']}! ☁️")
     
-    # --- FIX: We define save_folder here so BOTH Upload and Gallery can access it ---
+    
     save_folder = "MyCloudStorage"
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
     
-    # 1. Streamlit widget for file upload
+    
     uploaded_file = st.file_uploader("Upload your file here (Photos/Videos/Docs)", type=['png', 'jpg', 'jpeg', 'mp4', 'txt', 'pdf'])
     
     if uploaded_file is not None:
         if st.button("Upload to Cloud ⏏"):
             file_path = os.path.join(save_folder, uploaded_file.name)
             
-            # Writing the uploaded file to the local storage
+            
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
                 
-            # Saving file details into the MySQL database
+            
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
@@ -166,14 +169,14 @@ else:
 
     st.write("---")
     
-    # --- GALLERY SECTION START ---
+    
     st.subheader("📁 Your Cloud Gallery")
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Fetching only the logged-in user's files from the database
+        
         cursor.execute("SELECT filename, file_type FROM files WHERE user_id = %s", (st.session_state['id'],))
         user_files = cursor.fetchall()
         
@@ -190,23 +193,41 @@ else:
                 if os.path.exists(file_path):
                     col = cols[index % 3] # Cycle through the 3 columns
                     
-                    with col:
-                        # If it's an image, display it
-                        if file_type in ['png', 'jpg', 'jpeg']:
-                            st.image(file_path, caption=file_name, use_container_width=True)
-                        # If it's a video, play it
-                        elif file_type == 'mp4':
-                            st.video(file_path)
-                            st.caption(file_name)
-                        # For documents or other files, provide a download button
-                        else:
-                            with open(file_path, "rb") as f:
-                                st.download_button(
-                                    label=f"📄 Download {file_name}",
-                                    data=f,
-                                    file_name=file_name,
-                                    key=f"download_{file_name}_{index}" # Added key to prevent errors
-                                )
+                   with col:
+                
+                if file_type in ['png', 'jpg', 'jpeg']:
+                    st.image(file_path, caption=file_name, use_container_width=True)
+                
+                elif file_type == 'mp4':
+                    st.video(file_path)
+                    st.caption(file_name)
+                
+                else:
+                    with open(file_path, "rb") as f:
+                        st.download_button(
+                            label=f"📄 Download {file_name}",
+                            data=f,
+                            file_name=file_name,
+                            key=f"download_{file_name}_{index}"
+                        )
+                
+                
+                if st.button("🗑️ Delete", key=f"delete_{file_name}_{index}"):
+                    try:
+                        ం
+                        if os.path.exists(file_path):
+                            os.remove(file_path)
+                        
+                        
+                        del_conn = get_db_connection()
+                        del_cursor = del_conn.cursor()
+                        del_cursor.execute("DELETE FROM files WHERE filename = %s AND user_id = %s", (file_name, st.session_state['id']))
+                        del_conn.commit()
+                        
+                        st.success("File Deleted 🗑️")
+                        st.rerun() 
+                    except Exception as e:
+                        st.error(f"Not Deleted,Error: {e}")
                 else:
                     st.warning(f"File missing on disk: {file_name}")
         else:
@@ -214,9 +235,9 @@ else:
             
     except Exception as e:
          st.error(f"Failed to load gallery: {e}")
-    # --- GALLERY SECTION END ---
+    
 
-    st.write("---") # Divider before logout
+    st.write("---") 
     
     if st.button("Logout"):
         st.session_state['logged_in'] = False
