@@ -5,12 +5,12 @@ import os
 
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host="gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+   return mysql.connector.connect(
+        host=st.secrets["mysql"]["host"],
         port=4000,
-        user="JXy2Cm2bk7rH4as.root",
-        password="FQUYoY14hugDgBRN", 
-        database="test"
+        user=st.secrets["mysql"]["user"],
+        password=st.secrets["mysql"]["password"],
+        database=st.secrets["mysql"]["database"]
     )
 
 
