@@ -81,14 +81,14 @@ if not st.session_state['logged_in']:
                 
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                cursor.execute("SELECT user_id, username FROM users WHERE username = %s AND password = %s", (login_user, login_pass))
+                cursor.execute("SELECT id, username FROM users WHERE username = %s AND password = %s", (login_user, login_pass))
                 user_record = cursor.fetchone()
                 
                 if user_record:
                     st.success("Login Successful!")
                     
                     st.session_state['logged_in'] = True
-                    st.session_state['user_id'] = user_record[0]
+                    st.session_state['id'] = user_record[0]
                     st.session_state['username'] = user_record[1]
                     st.rerun() 
                 else:
@@ -144,7 +144,7 @@ else:
                 file_ext = uploaded_file.name.split('.')[-1]
                 
                 sql_query = "INSERT INTO files (filename, file_type, user_id) VALUES (%s, %s, %s)"
-                values = (uploaded_file.name, file_ext, st.session_state['user_id'])
+                values = (uploaded_file.name, file_ext, st.session_state['id'])
                 
                 cursor.execute(sql_query, values)
                 conn.commit()
@@ -163,7 +163,7 @@ else:
         cursor = conn.cursor()
         
         # Fetching only the logged-in user's files from the database
-        cursor.execute("SELECT filename, file_type FROM files WHERE user_id = %s", (st.session_state['user_id'],))
+        cursor.execute("SELECT filename, file_type FROM files WHERE user_id = %s", (st.session_state['id'],))
         user_files = cursor.fetchall()
         
         if user_files:
