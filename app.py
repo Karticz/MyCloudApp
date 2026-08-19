@@ -34,7 +34,7 @@ html, body, [class*="css"]  {
     100% { background-position: 0% 50%; }
 }
 
-/* 2. Page Transition Animation (Slide & Fade) */
+/* 2. Page Transition Animation */
 @keyframes pageTransition {
     0% { opacity: 0; transform: translateX(-40px) scale(0.95); }
     100% { opacity: 1; transform: translateX(0px) scale(1); }
@@ -50,11 +50,11 @@ html, body, [class*="css"]  {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     margin-top: 40px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white; /* Make text white for dark background */
+    color: white; 
 }
 
-/* Make default text elements white */
-p, h1, h2, h3, label {
+/* Make text elements white */
+p, h1, h2, h3, label, .stRadio label {
     color: #ffffff !important;
 }
 
@@ -99,13 +99,24 @@ div.stButton > button:first-child {
 }
 div.stButton > button:first-child:hover {
     transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 0 25px 10px rgba(0, 242, 254, 0.7); /* THIS IS THE GLOW */
+    box-shadow: 0 0 25px 10px rgba(0, 242, 254, 0.7); 
+}
+
+/* 6. FIXED SIDEBAR & HEADER BACKGROUND (No more white!) */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0f2027, #2c5364) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+[data-testid="stSidebar"] * {
+    color: white !important;
+}
+[data-testid="stHeader"] {
+    background-color: transparent !important;
 }
 
 /* Hide default streamlit elements safely */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-/* Did NOT hide header so your sidebar toggle button stays visible! */
 </style>
 """, unsafe_allow_html=True)
 
