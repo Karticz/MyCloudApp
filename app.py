@@ -218,7 +218,7 @@ else:
 
     st.write("---") # Divider before logout
     
-    if st.button("Logout ❮❮requirements.txt"):
+    if st.button("Logout"):
         st.session_state['logged_in'] = False
         st.rerun()
 
