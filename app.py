@@ -16,47 +16,58 @@ def get_db_connection():
 
 st.set_page_config(page_title="My Cloud App", page_icon="☁️", layout="centered")
 
-glass_css = """
+st.markdown("""
 <style>
-.stApp {
-    background: linear-gradient(-45deg, #1e3c72, #2a5298, #ff6a00, #ee0979);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html, body, [class*="css"]  {
+    font-family: 'Poppins', sans-serif;
 }
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-h1, h2, h3, p, label {
-    color: #ffffff !important;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-div[data-testid="stTextInput"] > div > div > input {
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 12px;
-    color: white !important;
-}
-div[data-testid="stButton"] > button {
-    background: rgba(255, 255, 255, 0.2) !important;
+
+
+.block-container {
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 12px;
-    color: white !important;
-    font-weight: bold;
-    font-size: 16px;
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 2rem 3rem !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    margin-top: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+.stTextInput > div > div > input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+
+div.stButton > button:first-child {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
+    width: 100%;
+    font-weight: 600;
 }
-div[data-testid="stButton"] > button:hover {
-    background: rgba(255, 255, 255, 0.4) !important;
-    transform: scale(1.05);
+
+div.stButton > button:first-child:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
+
+
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 </style>
-"""
-st.markdown(glass_css, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.title("☁️ My Own Cloud Storage")
 st.write("🔒︎ Keep your photos and videos completely safe.")
